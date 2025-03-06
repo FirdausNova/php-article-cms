@@ -40,7 +40,7 @@ A web-based content management system for managing articles, categories, and use
 
 1. Clone or download the repository to your web server directory:
    ```
-   git clone [repository-url]
+   git clone https://github.com/FirdausNova/php-article-cms
    ```
 
 2. Import the database:

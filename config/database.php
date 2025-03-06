@@ -143,5 +143,11 @@ if ($result->num_rows == 0) {
     $stmt->close();
 }
 
+// Include roles configuration first to ensure user_roles table exists
+require_once 'roles.php';
+
+// Then include users configuration
+require_once 'users.php';
+
 return $conn;
 ?>

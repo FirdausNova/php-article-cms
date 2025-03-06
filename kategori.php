@@ -4,21 +4,54 @@ session_start();
 // Include database connection
 require_once 'config/database.php';
 
-// Fetch latest articles from database
-$sql = "SELECT a.*, k.nama as kategori_nama, k.slug as kategori_slug 
-        FROM artikel a 
-        JOIN kategori k ON a.kategori_id = k.id 
-        ORDER BY a.tanggal_publikasi DESC 
-        LIMIT 3";
-$result = $conn->query($sql);
+// Get category from URL parameter
+$category_id = isset($_GET['id']) ? $_GET['id'] : null;
+$category_slug = isset($_GET['slug']) ? $_GET['slug'] : null;
+
+// Initialize variables
+$category = null;
 $articles = [];
 
-while ($row = $result->fetch_assoc()) {
-    $articles[] = $row;
+// Fetch category information
+if ($category_id) {
+    $sql = "SELECT * FROM kategori WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $category_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $category = $result->fetch_assoc();
+} elseif ($category_slug) {
+    $sql = "SELECT * FROM kategori WHERE slug = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $category_slug);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $category = $result->fetch_assoc();
 }
 
-// Fetch all categories
-$sql = "SELECT * FROM kategori ORDER BY nama ASC LIMIT 4";
+// If category found, get articles from that category
+if ($category) {
+    $sql = "SELECT a.*, k.nama as kategori_nama 
+            FROM artikel a 
+            JOIN kategori k ON a.kategori_id = k.id 
+            WHERE a.kategori_id = ? 
+            ORDER BY a.tanggal_publikasi DESC";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $category['id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    while ($row = $result->fetch_assoc()) {
+        $articles[] = $row;
+    }
+}
+
+// If no specific category, get all categories
+$sql = "SELECT k.*, COUNT(a.id) as artikel_count 
+        FROM kategori k 
+        LEFT JOIN artikel a ON k.id = a.kategori_id 
+        GROUP BY k.id 
+        ORDER BY k.nama ASC";
 $result = $conn->query($sql);
 $categories = [];
 
@@ -26,12 +59,13 @@ while ($row = $result->fetch_assoc()) {
     $categories[] = $row;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Artikel</title>
+    <title><?php echo $category ? htmlspecialchars($category['nama']) . ' - ' : ''; ?>Kategori - Portal Artikel</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -50,8 +84,8 @@ while ($row = $result->fetch_assoc()) {
                 </button>
                 <div class="collapse navbar-collapse" id="navbarMain">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link active px-3" href="index.php"><i class="fas fa-home me-1"></i> Beranda</a></li>
-                        <li class="nav-item"><a class="nav-link px-3" href="kategori.php"><i class="fas fa-list me-1"></i> Kategori</a></li>
+                        <li class="nav-item"><a class="nav-link px-3" href="index.php"><i class="fas fa-home me-1"></i> Beranda</a></li>
+                        <li class="nav-item"><a class="nav-link active px-3" href="kategori.php"><i class="fas fa-list me-1"></i> Kategori</a></li>
                         <?php if(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle px-3" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
@@ -78,105 +112,67 @@ while ($row = $result->fetch_assoc()) {
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 mx-auto text-center">
-                    <h2 class="display-4">Selamat Datang di Portal Artikel</h2>
-                    <p class="lead">Temukan berbagai artikel menarik dan informatif dari berbagai kategori.</p>
-                    <div class="mt-4">
-                        <form action="search.php" method="GET" class="d-flex justify-content-center">
-                            <div class="input-group mb-3" style="max-width: 500px;">
-                                <input type="text" class="form-control" placeholder="Cari artikel..." name="keyword">
-                                <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured Articles -->
-    <section class="py-5">
-        <div class="container">
-            <h2 class="mb-4">Artikel Terbaru</h2>
-            <div class="row">
+    <!-- Main Content -->
+    <div class="container py-5">
+        <?php if ($category): ?>
+            <!-- Category Articles -->
+            <div class="mb-4">
+                <h2 class="mb-4">Artikel Kategori: <?php echo htmlspecialchars($category['nama']); ?></h2>
+                
                 <?php if (count($articles) > 0): ?>
-                    <?php foreach ($articles as $article): ?>
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100">
-                            <img src="<?php echo !empty($article['gambar']) ? $article['gambar'] : 'assets/images/placeholder.jpg'; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($article['judul']); ?>">
-                            <div class="card-body">
-                                <span class="badge bg-primary mb-2"><?php echo htmlspecialchars($article['kategori_nama']); ?></span>
-                                <h5 class="card-title"><?php echo htmlspecialchars($article['judul']); ?></h5>
-                                <p class="card-text"><?php echo substr(strip_tags($article['konten']), 0, 100) . '...'; ?></p>
-                            </div>
-                            <div class="card-footer bg-white d-flex justify-content-between align-items-center">
-                                <small class="text-muted">Dipublikasikan: <?php echo date('d M Y', strtotime($article['tanggal_publikasi'])); ?></small>
-                                <a href="artikel.php?id=<?php echo $article['id']; ?>" class="btn btn-sm btn-outline-primary">Baca Selengkapnya</a>
+                    <div class="row">
+                        <?php foreach ($articles as $article): ?>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <img src="<?php echo !empty($article['gambar']) ? $article['gambar'] : 'assets/images/placeholder.jpg'; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($article['judul']); ?>">
+                                <div class="card-body">
+                                    <span class="badge bg-primary mb-2"><?php echo htmlspecialchars($article['kategori_nama']); ?></span>
+                                    <h5 class="card-title"><?php echo htmlspecialchars($article['judul']); ?></h5>
+                                    <p class="card-text"><?php echo substr(strip_tags($article['konten']), 0, 100) . '...'; ?></p>
+                                </div>
+                                <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">Dipublikasikan: <?php echo date('d M Y', strtotime($article['tanggal_publikasi'])); ?></small>
+                                    <a href="artikel.php?id=<?php echo $article['id']; ?>" class="btn btn-sm btn-outline-primary">Baca Selengkapnya</a>
+                                </div>
                             </div>
                         </div>
+                        <?php endforeach; ?>
                     </div>
-                    <?php endforeach; ?>
                 <?php else: ?>
-                    <div class="col-12 text-center">
-                        <p>Belum ada artikel yang tersedia.</p>
+                    <div class="alert alert-info">
+                        <p class="mb-0">Belum ada artikel dalam kategori ini.</p>
                     </div>
                 <?php endif; ?>
             </div>
+        <?php else: ?>
+            <!-- All Categories -->
+            <h2 class="mb-4">Semua Kategori</h2>
             
-            <div class="text-center mt-4">
-                <a href="semua-artikel.php" class="btn btn-primary">Lihat Semua Artikel</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Categories Section -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <h2 class="mb-4">Kategori Artikel</h2>
             <div class="row">
                 <?php if (count($categories) > 0): ?>
-                    <?php foreach ($categories as $category): ?>
-                    <div class="col-md-3 mb-4">
-                        <div class="card text-center h-100">
-                            <div class="card-body">
-                                <i class="<?php echo !empty($category['icon']) ? $category['icon'] : 'fas fa-folder'; ?> fa-3x mb-3 text-primary"></i>
-                                <h5 class="card-title"><?php echo htmlspecialchars($category['nama']); ?></h5>
-                                <p class="card-text">Artikel seputar <?php echo htmlspecialchars(strtolower($category['nama'])); ?>.</p>
-                                <a href="kategori.php?slug=<?php echo $category['slug']; ?>" class="btn btn-outline-primary">Lihat Artikel</a>
+                    <?php foreach ($categories as $cat): ?>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="<?php echo !empty($cat['icon']) ? $cat['icon'] : 'fas fa-folder'; ?> fa-3x mb-3 text-primary"></i>
+                                <h5 class="card-title"><?php echo htmlspecialchars($cat['nama']); ?></h5>
+                                <p class="card-text">Artikel seputar <?php echo htmlspecialchars(strtolower($cat['nama'])); ?>.</p>
+                                <p><span class="badge bg-primary"><?php echo $cat['artikel_count']; ?> artikel</span></p>
+                                <a href="kategori.php?id=<?php echo $cat['id']; ?>" class="btn btn-outline-primary">Lihat Artikel</a>
                             </div>
                         </div>
                     </div>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <div class="col-12 text-center">
-                        <p>Belum ada kategori yang tersedia.</p>
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <p class="mb-0">Belum ada kategori yang tersedia.</p>
+                        </div>
                     </div>
                 <?php endif; ?>
             </div>
-        </div>
-    </section>
-
-    <!-- Newsletter Section -->
-    <section class="py-5 bg-primary text-white">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 mb-3 mb-md-0">
-                    <h3>Berlangganan Newsletter</h3>
-                    <p>Dapatkan update artikel terbaru langsung ke email Anda.</p>
-                </div>
-                <div class="col-md-6">
-                    <form action="subscribe.php" method="POST" class="d-flex">
-                        <input type="email" class="form-control me-2" placeholder="Alamat Email Anda" required>
-                        <button type="submit" class="btn btn-light">Berlangganan</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
+        <?php endif; ?>
+    </div>
 
     <!-- Footer -->
     <footer class="py-4 bg-dark text-white">

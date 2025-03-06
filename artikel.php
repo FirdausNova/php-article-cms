@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 // Include database connection
 require_once 'config/database.php';
 
@@ -107,24 +109,44 @@ if (isset($_GET['comment_added']) && $_GET['comment_added'] == 1) {
     <meta property="og:image" content="<?php echo htmlspecialchars($artikel['gambar']); ?>">
 </head>
 <body>
-    <!-- Header -->
-    <header class="bg-primary text-white py-3">
+    <!-- Header/Navbar -->
+    <header class="bg-primary text-white py-3 shadow-sm sticky-top">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h1 class="mb-0">Portal Artikel</h1>
+            <nav class="navbar navbar-expand-lg navbar-dark p-0">
+                <a class="navbar-brand d-flex align-items-center" href="index.php">
+                    <i class="fas fa-book-open me-2"></i>
+                    <h1 class="h3 mb-0">Portal Artikel</h1>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link px-3" href="index.php"><i class="fas fa-home me-1"></i> Beranda</a></li>
+                        <li class="nav-item"><a class="nav-link active px-3" href="kategori.php"><i class="fas fa-list me-1"></i> Kategori</a></li>
+                        <?php if(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true): ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle px-3" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <img src="<?php echo strpos($_SESSION['user_foto'] ?? '', 'uploads/') === 0 ? 'assets/images/' . htmlspecialchars($_SESSION['user_foto']) : 'assets/images/default.jpg'; ?>" alt="Profile" class="rounded-circle me-1" style="width: 24px; height: 24px; object-fit: cover;"> <?php echo htmlspecialchars($_SESSION['user_nama']); ?>
+                                <?php if(isset($_SESSION['user_role_name'])): ?>
+                                <span class="badge bg-secondary"><?php echo htmlspecialchars($_SESSION['user_role_name']); ?></span>
+                                <?php endif; ?>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="profil.php"><i class="fas fa-user me-2"></i> Profil Saya</a></li>
+                                <?php if(isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true): ?>
+                                <li><a class="dropdown-item" href="admin/index.php"><i class="fas fa-user-shield me-2"></i> Admin Panel</a></li>
+                                <?php endif; ?>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                            </ul>
+                        </li>
+                        <?php else: ?>
+                        <li class="nav-item"><a class="nav-link px-3" href="login.php"><i class="fas fa-sign-in-alt me-1"></i> Login</a></li>
+                        <?php endif; ?>
+                    </ul>
                 </div>
-                <div class="col-md-6">
-                    <nav class="navbar navbar-expand navbar-dark justify-content-end">
-                        <ul class="navbar-nav">
-                            <li class="nav-item"><a class="nav-link" href="index.php">Beranda</a></li>
-                            <li class="nav-item"><a class="nav-link" href="kategori.php">Kategori</a></li>
-                            <li class="nav-item"><a class="nav-link" href="tentang.php">Tentang Kami</a></li>
-                            <li class="nav-item"><a class="nav-link" href="admin/login.php">Login Admin</a></li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
+            </nav>
         </div>
     </header>
 
@@ -320,7 +342,6 @@ if (isset($_GET['comment_added']) && $_GET['comment_added'] == 1) {
                     <ul class="list-unstyled">
                         <li><a href="index.php" class="text-white">Beranda</a></li>
                         <li><a href="kategori.php" class="text-white">Kategori</a></li>
-                        <li><a href="tentang.php" class="text-white">Tentang Kami</a></li>
                         <li><a href="kontak.php" class="text-white">Kontak</a></li>
                     </ul>
                 </div>

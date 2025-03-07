@@ -82,6 +82,9 @@ while ($row = $result->fetch_assoc()) {
                     <li class="nav-item">
                         <a class="nav-link px-3" href="komentar.php"><i class="fas fa-comments me-1"></i> Komentar</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="roles.php"><i class="fas fa-user-tag me-1"></i> Role</a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
@@ -126,6 +129,11 @@ while ($row = $result->fetch_assoc()) {
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="roles.php">
+                                <i class="fas fa-user-tag"></i> Role
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="../index.php" target="_blank">
                                 <i class="fas fa-external-link-alt"></i> Lihat Website
                             </a>
@@ -141,7 +149,6 @@ while ($row = $result->fetch_assoc()) {
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
                             <a href="artikel_tambah.php" class="btn btn-sm btn-outline-primary"><i class="fas fa-plus"></i> Tambah Artikel</a>
-                            <a href="kategori_tambah.php" class="btn btn-sm btn-outline-secondary"><i class="fas fa-plus"></i> Tambah Kategori</a>
                         </div>
                     </div>
                 </div>

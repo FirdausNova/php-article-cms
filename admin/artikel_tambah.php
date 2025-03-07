@@ -139,6 +139,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <li class="nav-item">
                         <a class="nav-link" href="komentar.php">Komentar</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="roles.php">Role</a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
@@ -180,6 +183,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <li class="nav-item">
                             <a class="nav-link" href="komentar.php">
                                 <i class="fas fa-comments"></i> Komentar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="roles.php">
+                                <i class="fas fa-user-tag"></i> Role
                             </a>
                         </li>
                         <li class="nav-item">

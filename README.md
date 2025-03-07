@@ -1,106 +1,111 @@
-# Article Management System
+# 📚 Portal Artikel
 
-A web-based content management system for managing articles, categories, and user comments. Built with PHP and MySQL, featuring a responsive Bootstrap interface.
+![version](https://img.shields.io/badge/versi-1.0-blue) ![php](https://img.shields.io/badge/PHP-7.4%2B-purple) ![mysql](https://img.shields.io/badge/MySQL-5.7%2B-orange)
 
-## Features
+## 🌟 Tentang Aplikasi
 
-- **User Authentication**
-  - Secure login system
-  - Role-based access control (Admin and User roles)
-  - Profile management
+Portal Artikel adalah sistem manajemen konten berbasis web yang modern dan responsif untuk mengelola artikel, kategori, dan interaksi pengguna. Dibangun dengan PHP dan MySQL, dilengkapi dengan antarmuka Bootstrap 5 yang elegan dan mudah digunakan.
 
-- **Article Management**
-  - Create, edit, and delete articles
-  - Category organization
-  - Image upload support
-  - Rich text editor
+## ✨ Fitur Utama
 
-- **Comment System**
-  - User comments on articles
-  - Comment moderation by admins
-  - Comment approval workflow
+### 👤 Manajemen Pengguna
+- **Sistem Autentikasi** - Login dan registrasi yang aman
+- **Kontrol Akses** - Pembagian peran (Admin dan Pengguna biasa)
+- **Profil Pengguna** - Pengelolaan informasi dan foto profil
 
-- **Category Management**
-  - Organize articles by categories
-  - Category CRUD operations
+### 📝 Pengelolaan Artikel
+- **CRUD Artikel** - Membuat, membaca, memperbarui, dan menghapus artikel
+- **Kategori** - Pengorganisasian artikel berdasarkan kategori
+- **Media** - Dukungan unggah dan pengelolaan gambar
+- **Editor Teks** - Pemformatan konten yang kaya fitur
 
-- **Responsive Design**
-  - Bootstrap 5 interface
-  - Mobile-friendly layout
-  - Modern UI/UX
+### 💬 Sistem Komentar
+- **Interaksi Pengguna** - Komentar pada artikel
+- **Moderasi** - Pengelolaan komentar oleh admin
+- **Notifikasi** - Pemberitahuan aktivitas komentar
 
-## System Requirements
+### 🔍 Pencarian & Navigasi
+- **Pencarian** - Menemukan artikel berdasarkan kata kunci
+- **Paginasi** - Navigasi halaman yang efisien
+- **Filter Kategori** - Penyaringan artikel berdasarkan kategori
 
-- PHP 7.4 or higher
-- MySQL 5.7 or higher
-- Apache/XAMPP web server
-- Modern web browser
+### 📱 Antarmuka Responsif
+- **Bootstrap 5** - Desain modern dan responsif
+- **Mobile-Friendly** - Tampilan optimal di semua perangkat
+- **UI/UX** - Pengalaman pengguna yang intuitif
 
-## Installation
+## 🛠️ Persyaratan Sistem
 
-1. Clone or download the repository to your web server directory:
-   ```
-   git clone [repository-url]
-   ```
+- PHP 7.4 atau lebih tinggi
+- MySQL 5.7 atau lebih tinggi
+- Server web Apache/XAMPP
+- Browser web modern (Chrome, Firefox, Safari, Edge)
 
-2. Import the database:
-   - Create a new MySQL database
-   - Import the `artikel_db.sql` file
+## 📥 Instalasi
 
-3. Configure the database connection:
-   - Open `config/database.php`
-   - Update the database credentials:
-     ```php
-     $host = 'localhost';
-     $username = 'your_username';
-     $password = 'your_password';
-     $database = 'your_database';
-     ```
+### 1️⃣ Persiapan Proyek
+Clone atau unduh repositori ke direktori server web Anda:
+```bash
+git clone https://github.com/FirdausNova/php-article-cms
+```
 
-4. Set up the web server:
-   - Ensure the project is in your web server's root directory
-   - Configure necessary permissions for the `assets/images/uploads` directory
+### 2️⃣ Konfigurasi Database
+- Buat database MySQL baru
+- Impor file `artikel_db.sql` ke database yang telah dibuat
 
-## Usage
+### 3️⃣ Pengaturan Koneksi
+Buka dan edit file `config/database.php`:
+```php
+$host = 'localhost';      // Host database
+$username = 'username';   // Username database
+$password = 'password';   // Password database
+$database = 'artikel_db'; // Nama database
+```
 
-### Admin Panel
+### 4️⃣ Konfigurasi Server
+- Pastikan proyek berada di direktori root server web (htdocs untuk XAMPP)
+- Atur izin direktori `assets/images/uploads` menjadi dapat ditulis (writeable)
+- Akses aplikasi melalui browser: `http://localhost/artikel`
 
-1. Access the admin panel at `/admin/login.php`
-2. Log in with admin credentials
-3. Manage articles, categories, and comments
-4. Monitor dashboard statistics
+## 🚀 Cara Penggunaan
 
-### User Features
+### 👨‍💼 Panel Admin
+1. Akses panel admin di `/admin/login.php`
+2. Masuk dengan kredensial administrator
+3. Kelola artikel, kategori, komentar, dan pengguna
+4. Pantau statistik dan aktivitas melalui dashboard
 
-1. Register/Login at `/login.php`
-2. Browse articles and categories
-3. Leave comments on articles
-4. Manage personal profile
+### 👥 Area Pengguna
+1. Daftar atau masuk melalui halaman `/login.php`
+2. Jelajahi artikel berdasarkan kategori atau pencarian
+3. Berikan komentar pada artikel yang menarik
+4. Kelola profil dan preferensi pribadi
+5. Lihat semua artikel di halaman "Semua Artikel"
 
-## Directory Structure
+## 📂 Struktur Direktori
 
 ```
 /
-├── admin/           # Admin panel files
-├── assets/          # Static resources
-│   ├── css/         # Stylesheets
-│   ├── js/          # JavaScript files
-│   └── images/      # Uploaded images
-├── config/          # Configuration files
-└── artikel_db.sql   # Database schema
+├── admin/           # File panel administrasi
+├── assets/          # Aset statis (CSS, JS, gambar)
+│   ├── css/         # Stylesheet
+│   ├── js/          # File JavaScript
+│   └── images/      # Gambar dan unggahan
+├── config/          # File konfigurasi sistem
+└── artikel_db.sql   # Skema database
 ```
 
-## Security
+## 🔒 Keamanan
 
-- SQL injection prevention using prepared statements
-- XSS protection with input sanitization
-- Session-based authentication
-- Password hashing
+- Perlindungan injeksi SQL dengan prepared statements
+- Pencegahan serangan XSS melalui sanitasi input
+- Autentikasi berbasis sesi yang aman
+- Penyimpanan password dengan hashing
 
-## License
+## 📋 Lisensi
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+Dikembangkan untuk tujuan pendidikan dan penggunaan pribadi.
 
-## Support
+---
 
-For support and questions, please open an issue in the repository or contact the system administrator.
+© 2025 Portal Artikel. Hak Cipta Dilindungi.

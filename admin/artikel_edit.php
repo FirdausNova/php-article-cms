@@ -99,6 +99,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = 'Terjadi kesalahan saat mengupload gambar';
                 }
             }
+        } elseif (isset($_POST['remove_image']) && $_POST['remove_image'] == 1) {
+            // User wants to remove the image
+            if (!empty($artikel['gambar']) && file_exists("../{$artikel['gambar']}") && strpos($artikel['gambar'], 'default') === false) {
+                unlink("../{$artikel['gambar']}");
+            }
+            $gambar = 'assets/images/default.jpg';
         }
         
         if (empty($error)) {

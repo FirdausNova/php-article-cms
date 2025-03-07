@@ -51,6 +51,7 @@ while ($row = $result->fetch_assoc()) {
                 <div class="collapse navbar-collapse" id="navbarMain">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item"><a class="nav-link active px-3" href="index.php"><i class="fas fa-home me-1"></i> Beranda</a></li>
+                        <li class="nav-item"><a class="nav-link px-3" href="semua_artikel.php"><i class="fas fa-newspaper me-1"></i> Semua Artikel</a></li>
                         <li class="nav-item"><a class="nav-link px-3" href="kategori.php"><i class="fas fa-list me-1"></i> Kategori</a></li>
                         <?php if(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true): ?>
                         <li class="nav-item dropdown">
@@ -128,7 +129,7 @@ while ($row = $result->fetch_assoc()) {
             </div>
             
             <div class="text-center mt-4">
-                <a href="semua-artikel.php" class="btn btn-primary">Lihat Semua Artikel</a>
+                <a href="semua_artikel.php" class="btn btn-primary">Lihat Semua Artikel</a>
             </div>
         </div>
     </section>
@@ -182,31 +183,17 @@ while ($row = $result->fetch_assoc()) {
     <footer class="py-4 bg-dark text-white">
         <div class="container">
             <div class="row">
-                <div class="col-md-4 mb-3 mb-md-0">
+                <div class="col-md-6 mb-3 mb-md-0">
                     <h5>Portal Artikel</h5>
                     <p>Situs web yang menyediakan berbagai artikel menarik dan informatif dari berbagai kategori.</p>
                 </div>
-                <div class="col-md-4 mb-3 mb-md-0">
+                <div class="col-md-6">
                     <h5>Link Cepat</h5>
                     <ul class="list-unstyled">
                         <li><a href="index.php" class="text-white">Beranda</a></li>
+                        <li><a href="semua_artikel.php" class="text-white">Semua Artikel</a></li>
                         <li><a href="kategori.php" class="text-white">Kategori</a></li>
-                        <li><a href="kontak.php" class="text-white">Kontak</a></li>
                     </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Hubungi Kami</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-envelope me-2"></i> info@portalartikel.com</li>
-                        <li><i class="fas fa-phone me-2"></i> (021) 1234-5678</li>
-                        <li><i class="fas fa-map-marker-alt me-2"></i> Jl. Contoh No. 123, Jakarta</li>
-                    </ul>
-                    <div class="mt-3">
-                        <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
-                    </div>
                 </div>
             </div>
             <hr class="my-4">

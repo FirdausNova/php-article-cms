@@ -70,6 +70,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // Move uploaded file
             if (move_uploaded_file($_FILES['foto']['tmp_name'], $upload_path)) {
+                // Delete old profile photo if it exists and is not a default image
+                if (!empty($user['foto']) && strpos($user['foto'], 'uploads/') === 0) {
+                    $old_file_path = 'assets/images/' . $user['foto'];
+                    if (file_exists($old_file_path) && is_file($old_file_path)) {
+                        unlink($old_file_path);
+                    }
+                }
                 $foto = 'uploads/' . $new_filename;
             } else {
                 $error = 'Gagal mengunggah foto. Silakan coba lagi.';
@@ -296,6 +303,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Footer -->
     <footer class="py-4 bg-dark text-white mt-5">
         <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <h5>Portal Artikel</h5>
+                    <p>Situs web yang menyediakan berbagai artikel menarik dan informatif dari berbagai kategori.</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Link Cepat</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.php" class="text-white">Beranda</a></li>
+                        <li><a href="kategori.php" class="text-white">Kategori</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
             <div class="text-center">
                 <p class="mb-0">&copy; <?php echo date('Y'); ?> Portal Artikel. All rights reserved.</p>
             </div>

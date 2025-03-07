@@ -333,21 +333,17 @@ if (isset($_GET['comment_added']) && $_GET['comment_added'] == 1) {
     <footer class="py-4 bg-dark text-white">
         <div class="container">
             <div class="row">
-                <div class="col-md-4 mb-3 mb-md-0">
+                <div class="col-md-6 mb-3 mb-md-0">
                     <h5>Portal Artikel</h5>
                     <p>Situs web yang menyediakan berbagai artikel menarik dan informatif dari berbagai kategori.</p>
                 </div>
-                <div class="col-md-4 mb-3 mb-md-0">
+                <div class="col-md-6">
                     <h5>Link Cepat</h5>
                     <ul class="list-unstyled">
                         <li><a href="index.php" class="text-white">Beranda</a></li>
                         <li><a href="kategori.php" class="text-white">Kategori</a></li>
-                        <li><a href="kontak.php" class="text-white">Kontak</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4">
-                    <h5>Ikuti Kami</h5>
-                    <div class="d-flex">
                         <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
                         <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>

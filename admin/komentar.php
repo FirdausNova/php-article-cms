@@ -117,6 +117,9 @@ $status_messages = [
                     <li class="nav-item">
                         <a class="nav-link active px-3" href="komentar.php"><i class="fas fa-comments me-1"></i> Komentar</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="roles.php"><i class="fas fa-user-tag me-1"></i> Role</a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
@@ -158,6 +161,11 @@ $status_messages = [
                         <li class="nav-item">
                             <a class="nav-link active" href="komentar.php">
                                 <i class="fas fa-comments"></i> Komentar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="roles.php">
+                                <i class="fas fa-user-tag"></i> Role
                             </a>
                         </li>
                         <li class="nav-item">

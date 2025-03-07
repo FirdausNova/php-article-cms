@@ -42,39 +42,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
     }
 }
 
-// Handle category addition
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
-    $nama = trim($_POST['nama']);
-    $slug = strtolower(str_replace(' ', '-', preg_replace('/[^A-Za-z0-9-]+/', '-', $nama)));
-    
-    // Validate input
-    if (empty($nama)) {
-        $add_error = 'Nama kategori harus diisi';
-    } else {
-        // Check if category with same name or slug already exists
-        $stmt = $conn->prepare("SELECT COUNT(*) as count FROM kategori WHERE nama = ? OR slug = ?");
-        $stmt->bind_param("ss", $nama, $slug);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $count = $result->fetch_assoc()['count'];
-        
-        if ($count > 0) {
-            $add_error = 'Kategori dengan nama atau slug yang sama sudah ada';
-        } else {
-            // Insert category
-            $stmt = $conn->prepare("INSERT INTO kategori (nama, slug) VALUES (?, ?)");
-            $stmt->bind_param("ss", $nama, $slug);
-            
-            if ($stmt->execute()) {
-                // Redirect with success message
-                header('Location: kategori.php?status=added');
-                exit;
-            } else {
-                $add_error = 'Gagal menambahkan kategori: ' . $stmt->error;
-            }
-        }
-    }
-}
+
 
 // Handle category update
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'edit') {
@@ -170,6 +138,9 @@ $status_messages = [
                     <li class="nav-item">
                         <a class="nav-link px-3" href="komentar.php"><i class="fas fa-comments me-1"></i> Komentar</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="roles.php"><i class="fas fa-user-tag me-1"></i> Role</a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
@@ -214,6 +185,11 @@ $status_messages = [
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="roles.php">
+                                <i class="fas fa-user-tag"></i> Role
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="../index.php" target="_blank">
                                 <i class="fas fa-external-link-alt"></i> Lihat Website
                             </a>
@@ -233,9 +209,6 @@ $status_messages = [
                 
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Manajemen Kategori</h1>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-                        <i class="fas fa-plus"></i> Tambah Kategori
-                    </button>
                 </div>
                 
                 <?php if (isset($_GET['status']) && array_key_exists($_GET['status'], $status_messages)): ?>
@@ -301,32 +274,7 @@ $status_messages = [
         </div>
     </div>
     
-    <!-- Add Category Modal -->
-    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addCategoryModalLabel">Tambah Kategori</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <?php if (isset($add_error)): ?>
-                    <div class="alert alert-danger"><?php echo $add_error; ?></div>
-                    <?php endif; ?>
-                    <form action="" method="POST">
-                        <input type="hidden" name="action" value="add">
-                        <div class="mb-3">
-                            <label for="nama" class="form-label">Nama Kategori</label>
-                            <input type="text" class="form-control" id="nama" name="nama" required>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Edit Category Modal -->
     <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">

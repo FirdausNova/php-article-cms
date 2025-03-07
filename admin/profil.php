@@ -19,6 +19,22 @@ $stmt->execute();
 $result = $stmt->get_result();
 $admin = $result->fetch_assoc();
 
+// Check if foto column exists in admin table
+$check_column = $conn->query("SHOW COLUMNS FROM admin LIKE 'foto'");
+if ($check_column->num_rows == 0) {
+    // Add foto column if it doesn't exist
+    $conn->query("ALTER TABLE admin ADD COLUMN foto VARCHAR(255) DEFAULT NULL");
+}
+
+// If admin data not found, initialize with empty values to prevent warnings
+if (!$admin) {
+    $admin = [
+        'nama' => '',
+        'username' => '',
+        'email' => ''
+    ];
+}
+
 $error = '';
 $success = '';
 
@@ -29,6 +45,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nama = trim($_POST['nama']);
         $username = trim($_POST['username']);
         $email = trim($_POST['email']);
+        
+        // Handle profile photo upload
+        $foto = $admin['foto']; // Default to current photo
+        if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
+            $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+            $filename = $_FILES['foto']['name'];
+            $file_ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+            
+            // Validate file extension
+            if (!in_array($file_ext, $allowed)) {
+                $error = 'Format file tidak didukung. Gunakan format JPG, JPEG, PNG, atau GIF.';
+            } else {
+                // Generate unique filename
+                $new_filename = 'admin_' . $admin_id . '_' . time() . '.' . $file_ext;
+                $upload_dir = '../assets/images/uploads/';
+                
+                // Create directory if it doesn't exist
+                if (!file_exists($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+                
+                $upload_path = $upload_dir . $new_filename;
+                
+                // Move uploaded file
+                if (move_uploaded_file($_FILES['foto']['tmp_name'], $upload_path)) {
+                    // Delete old photo if exists
+                    if (!empty($admin['foto']) && file_exists('../' . $admin['foto'])) {
+                        unlink('../' . $admin['foto']);
+                    }
+                    
+                    $foto = 'assets/images/uploads/' . $new_filename;
+                } else {
+                    $error = 'Gagal mengunggah foto. Silakan coba lagi.';
+                }
+            }
+        } elseif (isset($_POST['remove_photo']) && $_POST['remove_photo'] == 1) {
+            // User wants to remove the photo
+            if (!empty($admin['foto']) && file_exists('../' . $admin['foto'])) {
+                unlink('../' . $admin['foto']);
+            }
+            $foto = null;
+        }
         
         // Validate input
         if (empty($nama) || empty($username) || empty($email)) {
@@ -44,8 +102,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = 'Username sudah digunakan oleh admin lain';
             } else {
                 // Update admin data
-                $stmt = $conn->prepare("UPDATE admin SET nama = ?, username = ?, email = ? WHERE id = ?");
-                $stmt->bind_param("sssi", $nama, $username, $email, $admin_id);
+                $stmt = $conn->prepare("UPDATE admin SET nama = ?, username = ?, email = ?, foto = ? WHERE id = ?");
+                $stmt->bind_param("ssssi", $nama, $username, $email, $foto, $admin_id);
                 
                 if ($stmt->execute()) {
                     // Update session data
@@ -60,6 +118,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->execute();
                     $result = $stmt->get_result();
                     $admin = $result->fetch_assoc();
+
+// If admin data not found, initialize with empty values to prevent warnings
+if (!$admin) {
+    $admin = [
+        'nama' => '',
+        'username' => '',
+        'email' => ''
+    ];
+}
                 } else {
                     $error = 'Gagal memperbarui profil: ' . $stmt->error;
                 }
@@ -138,6 +205,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <li class="nav-item">
                         <a class="nav-link" href="komentar.php">Komentar</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="roles.php">Role</a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
@@ -179,6 +249,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <li class="nav-item">
                             <a class="nav-link" href="komentar.php">
                                 <i class="fas fa-comments"></i> Komentar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="roles.php">
+                                <i class="fas fa-user-tag"></i> Role
                             </a>
                         </li>
                         <li class="nav-item">
@@ -224,8 +299,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <h5 class="card-title mb-0">Informasi Profil</h5>
                             </div>
                             <div class="card-body">
-                                <form action="" method="POST">
+                                <form action="" method="POST" enctype="multipart/form-data">
                                     <input type="hidden" name="update_profile" value="1">
+                                    
+                                    <div class="mb-4 text-center">
+                                        <?php if (!empty($admin['foto']) && file_exists('../' . $admin['foto'])): ?>
+                                            <img src="../<?php echo htmlspecialchars($admin['foto']); ?>" alt="Profile Photo" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                                            <div class="mt-2">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="remove_photo" name="remove_photo" value="1">
+                                                    <label class="form-check-label" for="remove_photo">Hapus Foto</label>
+                                                </div>
+                                            </div>
+                                        <?php else: ?>
+                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto" style="width: 150px; height: 150px;">
+                                                <i class="fas fa-user fa-5x text-white"></i>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="foto" class="form-label">Foto Profil</label>
+                                        <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
+                                        <div class="form-text">Format: JPG, JPEG, PNG, GIF. Ukuran maksimal: 2MB.</div>
+                                    </div>
+                                    
                                     <div class="mb-3">
                                         <label for="nama" class="form-label">Nama Lengkap</label>
                                         <input type="text" class="form-control" id="nama" name="nama" value="<?php echo htmlspecialchars($admin['nama']); ?>" required>

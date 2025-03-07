@@ -36,10 +36,17 @@ Portal Artikel adalah sistem manajemen konten berbasis web yang modern dan respo
 
 ## 🛠️ Persyaratan Sistem
 
+<<<<<<< HEAD
 - PHP 7.4 atau lebih tinggi
 - MySQL 5.7 atau lebih tinggi
 - Server web Apache/XAMPP
 - Browser web modern (Chrome, Firefox, Safari, Edge)
+=======
+1. Clone or download the repository to your web server directory:
+   ```
+   git clone https://github.com/FirdausNova/php-article-cms
+   ```
+>>>>>>> 918b48ff9ab09263047238ca1669c2da843f3d9e
 
 ## 📥 Instalasi
 

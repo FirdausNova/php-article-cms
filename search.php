@@ -59,9 +59,9 @@ $total_pages = ceil($total_articles / $per_page);
 </head>
 <body>
     <!-- Header/Navbar -->
-    <header class="bg-primary text-white py-3 shadow-sm sticky-top">
+    <header class="shadow-sm sticky-top">
         <div class="container">
-            <nav class="navbar navbar-expand-lg navbar-dark p-0">
+            <nav class="navbar navbar-expand-lg navbar-dark p-0 py-2">
                 <a class="navbar-brand d-flex align-items-center" href="index.php">
                     <i class="fas fa-book-open me-2"></i>
                     <h1 class="h3 mb-0">Portal Artikel</h1>
@@ -72,6 +72,7 @@ $total_pages = ceil($total_articles / $per_page);
                 <div class="collapse navbar-collapse" id="navbarMain">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item"><a class="nav-link px-3" href="index.php"><i class="fas fa-home me-1"></i> Beranda</a></li>
+                        <li class="nav-item"><a class="nav-link px-3" href="semua_artikel.php"><i class="fas fa-newspaper me-1"></i> Semua Artikel</a></li>
                         <li class="nav-item"><a class="nav-link px-3" href="kategori.php"><i class="fas fa-list me-1"></i> Kategori</a></li>
                         <?php if(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true): ?>
                         <li class="nav-item dropdown">
@@ -195,17 +196,29 @@ $total_pages = ceil($total_articles / $per_page);
     <!-- Footer -->
     <footer class="py-4 bg-dark text-white">
         <div class="container">
-            <div class="row">
-                <div class="col-md-6 mb-3 mb-md-0">
-                    <h5>Portal Artikel</h5>
-                    <p>Situs web yang menyediakan berbagai artikel menarik dan informatif dari berbagai kategori.</p>
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5><i class="fas fa-book-open me-2"></i>Portal Artikel</h5>
+                    <p>Situs web yang menyediakan berbagai artikel menarik dan informatif dari berbagai kategori untuk menambah wawasan dan pengetahuan Anda.</p>
+                    <div class="social-links d-flex gap-3 mt-3">
+                        <a href="#" class="text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <h5>Link Cepat</h5>
                     <ul class="list-unstyled">
                         <li><a href="index.php" class="text-white">Beranda</a></li>
+                        <li><a href="semua_artikel.php" class="text-white">Semua Artikel</a></li>
                         <li><a href="kategori.php" class="text-white">Kategori</a></li>
                     </ul>
+                </div>
+                <div class="col-lg-4 col-md-12">
+                    <h5>Kontak Kami</h5>
+                    <p><i class="fas fa-envelope me-2"></i> info@portalartikel.com</p>
+                    <p><i class="fas fa-phone me-2"></i> +62 123 4567 890</p>
+                    <p><i class="fas fa-map-marker-alt me-2"></i> Jl. Artikel No. 123, Jakarta</p>
                 </div>
             </div>
             <hr class="my-4">

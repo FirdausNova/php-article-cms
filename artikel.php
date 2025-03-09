@@ -104,15 +104,16 @@ if (isset($_GET['comment_added']) && $_GET['comment_added'] == 1) {
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <meta property="og:title" content="<?php echo htmlspecialchars($artikel['judul']); ?>">
     <meta property="og:description" content="<?php echo htmlspecialchars(substr(strip_tags($artikel['konten']), 0, 160)); ?>...">
     <meta property="og:image" content="<?php echo htmlspecialchars($artikel['gambar']); ?>">
 </head>
 <body>
     <!-- Header/Navbar -->
-    <header class="bg-primary text-white py-3 shadow-sm sticky-top">
+    <header class="shadow-sm sticky-top">
         <div class="container">
-            <nav class="navbar navbar-expand-lg navbar-dark p-0">
+            <nav class="navbar navbar-expand-lg navbar-dark p-0 py-2">
                 <a class="navbar-brand d-flex align-items-center" href="index.php">
                     <i class="fas fa-book-open me-2"></i>
                     <h1 class="h3 mb-0">Portal Artikel</h1>
@@ -123,11 +124,12 @@ if (isset($_GET['comment_added']) && $_GET['comment_added'] == 1) {
                 <div class="collapse navbar-collapse" id="navbarMain">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item"><a class="nav-link px-3" href="index.php"><i class="fas fa-home me-1"></i> Beranda</a></li>
+                        <li class="nav-item"><a class="nav-link px-3" href="semua_artikel.php"><i class="fas fa-newspaper me-1"></i> Semua Artikel</a></li>
                         <li class="nav-item"><a class="nav-link active px-3" href="kategori.php"><i class="fas fa-list me-1"></i> Kategori</a></li>
                         <?php if(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle px-3" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <img src="<?php echo strpos($_SESSION['user_foto'] ?? '', 'uploads/') === 0 ? 'assets/images/' . htmlspecialchars($_SESSION['user_foto']) : 'assets/images/default.jpg'; ?>" alt="Profile" class="rounded-circle me-1" style="width: 24px; height: 24px; object-fit: cover;"> <?php echo htmlspecialchars($_SESSION['user_nama']); ?>
+                                <img src="<?php echo !empty($_SESSION['user_foto']) ? (file_exists($_SESSION['user_foto']) ? htmlspecialchars($_SESSION['user_foto']) : 'assets/images/default.jpg') : 'assets/images/default.jpg'; ?>" alt="Profile" class="rounded-circle me-1" style="width: 24px; height: 24px; object-fit: cover;"> <?php echo htmlspecialchars($_SESSION['user_nama']); ?>
                                 <?php if(isset($_SESSION['user_role_name'])): ?>
                                 <span class="badge bg-secondary"><?php echo htmlspecialchars($_SESSION['user_role_name']); ?></span>
                                 <?php endif; ?>
@@ -151,97 +153,103 @@ if (isset($_GET['comment_added']) && $_GET['comment_added'] == 1) {
     </header>
 
     <!-- Article Content -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row">
-                <!-- Main Content -->
-                <div class="col-lg-8">
-                    <!-- Breadcrumb -->
-                    <nav aria-label="breadcrumb" class="mb-4">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.php">Beranda</a></li>
-                            <li class="breadcrumb-item"><a href="kategori.php?id=<?php echo $artikel['kategori_id']; ?>"><?php echo htmlspecialchars($artikel['kategori_nama']); ?></a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($artikel['judul']); ?></li>
-                        </ol>
-                    </nav>
-                    
-                    <!-- Article Header -->
-                    <h1 class="mb-3"><?php echo htmlspecialchars($artikel['judul']); ?></h1>
+    <div class="container py-5">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.php">Beranda</a></li>
+                        <li class="breadcrumb-item"><a href="kategori.php?id=<?php echo $artikel['kategori_id']; ?>"><?php echo htmlspecialchars($artikel['kategori_nama']); ?></a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($artikel['judul']); ?></li>
+                    </ol>
+                </nav>
+                
+                <!-- Article Header -->
+                <div class="mb-4">
+                    <h1 class="display-5 fw-bold mb-3"><?php echo htmlspecialchars($artikel['judul']); ?></h1>
                     <div class="d-flex align-items-center mb-4">
                         <span class="badge bg-primary me-2"><?php echo htmlspecialchars($artikel['kategori_nama']); ?></span>
                         <span class="text-muted"><i class="far fa-calendar-alt me-1"></i> <?php echo date('d F Y', strtotime($artikel['tanggal_publikasi'])); ?></span>
                     </div>
-                    
-                    <!-- Featured Image -->
-                    <img src="<?php echo htmlspecialchars($artikel['gambar']); ?>" class="img-fluid rounded mb-4" alt="<?php echo htmlspecialchars($artikel['judul']); ?>">
-                    
-                    <!-- Article Content -->
-                    <div class="article-content mb-5">
-                        <?php echo $artikel['konten']; ?>
+                </div>
+                
+                <!-- Featured Image -->
+                <div class="position-relative mb-5">
+                    <img src="<?php echo htmlspecialchars($artikel['gambar']); ?>" class="img-fluid rounded shadow-sm w-100" alt="<?php echo htmlspecialchars($artikel['judul']); ?>" style="max-height: 500px; object-fit: cover;">
+                </div>
+                
+                <!-- Article Content -->
+                <div class="article-content mb-5 bg-white p-4 rounded shadow-sm">
+                    <?php echo $artikel['konten']; ?>
+                </div>
+                
+                <!-- Share Buttons -->
+                <div class="mb-5 p-4 bg-light rounded shadow-sm">
+                    <h5 class="mb-3"><i class="fas fa-share-alt me-2 text-primary"></i>Bagikan Artikel:</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>" class="btn btn-outline-primary" target="_blank"><i class="fab fa-facebook-f me-2"></i> Facebook</a>
+                        <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>&text=<?php echo urlencode($artikel['judul']); ?>" class="btn btn-outline-info" target="_blank"><i class="fab fa-twitter me-2"></i> Twitter</a>
+                        <a href="https://wa.me/?text=<?php echo urlencode($artikel['judul'] . ' - http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>" class="btn btn-outline-success" target="_blank"><i class="fab fa-whatsapp me-2"></i> WhatsApp</a>
                     </div>
+                </div>
+                
+                <!-- Comments Section -->
+                <div class="mb-5">
+                    <h3 class="mb-4"><i class="far fa-comments text-primary me-2"></i>Komentar (<?php echo count($comments); ?>)</h3>
                     
-                    <!-- Share Buttons -->
-                    <div class="mb-5">
-                        <h5>Bagikan Artikel:</h5>
-                        <div class="d-flex">
-                            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>" class="btn btn-outline-primary me-2" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
-                            <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>&text=<?php echo urlencode($artikel['judul']); ?>" class="btn btn-outline-info me-2" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
-                            <a href="https://wa.me/?text=<?php echo urlencode($artikel['judul'] . ' - http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>" class="btn btn-outline-success" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                        </div>
+                    <?php if (!empty($comment_success)): ?>
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i><?php echo $comment_success; ?>
                     </div>
+                    <?php endif; ?>
                     
-                    <!-- Comments Section -->
-                    <div class="mb-5">
-                        <h3 class="mb-4">Komentar (<?php echo count($comments); ?>)</h3>
-                        
-                        <?php if (!empty($comment_success)): ?>
-                        <div class="alert alert-success">
-                            <?php echo $comment_success; ?>
+                    <?php if (!empty($comment_error)): ?>
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i><?php echo $comment_error; ?>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <!-- Comment Form -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Tinggalkan Komentar</h5>
                         </div>
-                        <?php endif; ?>
-                        
-                        <?php if (!empty($comment_error)): ?>
-                        <div class="alert alert-danger">
-                            <?php echo $comment_error; ?>
-                        </div>
-                        <?php endif; ?>
-                        
-                        <!-- Comment Form -->
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <h5 class="card-title">Tinggalkan Komentar</h5>
-                                <form action="" method="POST">
-                                    <div class="mb-3">
+                        <div class="card-body">
+                            <form action="artikel.php?id=<?php echo $artikel_id; ?>" method="POST">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
                                         <label for="nama" class="form-label">Nama</label>
                                         <input type="text" class="form-control" id="nama" name="nama" required>
                                     </div>
-                                    <div class="mb-3">
+                                    <div class="col-md-6">
                                         <label for="email" class="form-label">Email</label>
                                         <input type="email" class="form-control" id="email" name="email" required>
-                                        <div class="form-text">Email Anda tidak akan dipublikasikan.</div>
                                     </div>
-                                    <div class="mb-3">
+                                    <div class="col-12">
                                         <label for="isi" class="form-label">Komentar</label>
                                         <textarea class="form-control" id="isi" name="isi" rows="4" required></textarea>
                                     </div>
-                                    <button type="submit" name="submit_comment" class="btn btn-primary">Kirim Komentar</button>
-                                </form>
-                            </div>
-                        </div>
-                        
-                        <!-- Comments List -->
-                        <?php if (count($comments) > 0): ?>
-                            <?php foreach ($comments as $comment): ?>
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h6 class="card-subtitle"><?php echo htmlspecialchars($comment['nama']); ?></h6>
-                                        <small class="text-muted"><?php echo date('d M Y H:i', strtotime($comment['created_at'])); ?></small>
+                                    <div class="col-12">
+                                        <button type="submit" name="submit_comment" class="btn btn-primary"><i class="fas fa-paper-plane me-2"></i>Kirim Komentar</button>
                                     </div>
-                                    <p class="card-text"><?php echo nl2br(htmlspecialchars($comment['isi'])); ?></p>
                                 </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Comments List -->
+                    <?php if (count($comments) > 0): ?>
+                        <?php foreach ($comments as $comment): ?>
+                        <div class="comment mb-3">
+                            <div class="d-flex">
+                                <h6 class="card-subtitle"><?php echo htmlspecialchars($comment['nama']); ?></h6>
+                                <small class="text-muted"><?php echo date('d M Y H:i', strtotime($comment['created_at'])); ?></small>
                             </div>
-                            <?php endforeach; ?>
+                            <p class="card-text"><?php echo nl2br(htmlspecialchars($comment['isi'])); ?></p>
+                        </div>
+                        <?php endforeach; ?>
                         <?php else: ?>
                             <p class="text-muted">Belum ada komentar. Jadilah yang pertama berkomentar!</p>
                         <?php endif; ?>

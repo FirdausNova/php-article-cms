@@ -128,19 +128,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php">Dashboard</a>
+                        <a class="nav-link" href="../index.php"><i class="fas fa-home me-1"></i> Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="artikel.php">Artikel</a>
+                        <a class="nav-link" href="index.php"><i class="fas fa-tachometer-alt me-1"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="kategori.php">Kategori</a>
+                        <a class="nav-link active" href="artikel.php"><i class="fas fa-newspaper me-1"></i> Artikel</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="komentar.php">Komentar</a>
+                        <a class="nav-link" href="kategori.php"><i class="fas fa-list me-1"></i> Kategori</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="roles.php">Role</a>
+                        <a class="nav-link" href="komentar.php"><i class="fas fa-comments me-1"></i> Komentar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="roles.php"><i class="fas fa-user-tag me-1"></i> Role</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">

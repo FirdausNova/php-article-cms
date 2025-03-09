@@ -89,7 +89,7 @@ while ($row = $result->fetch_assoc()) {
                         <?php if(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle px-3" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <img src="<?php echo strpos($_SESSION['user_foto'] ?? '', 'uploads/') === 0 ? 'assets/images/' . htmlspecialchars($_SESSION['user_foto']) : 'assets/images/default.jpg'; ?>" alt="Profile" class="rounded-circle me-1" style="width: 24px; height: 24px; object-fit: cover;"> <?php echo htmlspecialchars($_SESSION['user_nama']); ?>
+                                <img src="<?php echo !empty($_SESSION['user_foto']) ? (file_exists($_SESSION['user_foto']) ? htmlspecialchars($_SESSION['user_foto']) : 'assets/images/default.jpg') : 'assets/images/default.jpg'; ?>" alt="Profile" class="rounded-circle me-1" style="width: 24px; height: 24px; object-fit: cover;"> <?php echo htmlspecialchars($_SESSION['user_nama']); ?>
                                 <?php if(isset($_SESSION['user_role_name'])): ?>
                                 <span class="badge bg-secondary"><?php echo htmlspecialchars($_SESSION['user_role_name']); ?></span>
                                 <?php endif; ?>

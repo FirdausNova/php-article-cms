@@ -66,18 +66,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // Generate unique filename
             $new_filename = 'user_' . $user_id . '_' . time() . '.' . $file_ext;
-            $upload_path = 'assets/images/uploads/' . $new_filename;
+            $upload_dir = 'assets/images/profiles/';
+            
+            // Create directory if it doesn't exist
+            if (!file_exists($upload_dir)) {
+                mkdir($upload_dir, 0777, true);
+            }
+            
+            $upload_path = $upload_dir . $new_filename;
             
             // Move uploaded file
             if (move_uploaded_file($_FILES['foto']['tmp_name'], $upload_path)) {
                 // Delete old profile photo if it exists and is not a default image
-                if (!empty($user['foto']) && strpos($user['foto'], 'uploads/') === 0) {
-                    $old_file_path = 'assets/images/' . $user['foto'];
-                    if (file_exists($old_file_path) && is_file($old_file_path)) {
-                        unlink($old_file_path);
+                if (!empty($user['foto'])) {
+                    if (file_exists($user['foto']) && is_file($user['foto'])) {
+                        unlink($user['foto']);
+                    } else if (file_exists('assets/images/' . $user['foto']) && is_file('assets/images/' . $user['foto'])) {
+                        unlink('assets/images/' . $user['foto']);
                     }
                 }
-                $foto = 'uploads/' . $new_filename;
+                $foto = 'assets/images/profiles/' . $new_filename;
             } else {
                 $error = 'Gagal mengunggah foto. Silakan coba lagi.';
             }
@@ -196,7 +204,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <?php if(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle active px-3" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <img src="<?php echo strpos($user['foto'], 'uploads/') === 0 ? 'assets/images/' . htmlspecialchars($user['foto']) : 'assets/images/' . htmlspecialchars($user['foto']); ?>" alt="Profile" class="rounded-circle me-1" style="width: 24px; height: 24px; object-fit: cover;"> <?php echo htmlspecialchars($_SESSION['user_nama']); ?>
+                                <?php if (!empty($user['foto']) && file_exists($user['foto'])): ?>
+                                <img src="<?php echo htmlspecialchars($user['foto']); ?>" alt="Profile" class="rounded-circle me-1" style="width: 24px; height: 24px; object-fit: cover;">
+                                <?php else: ?>
+                                <i class="fas fa-user-circle me-1"></i>
+                                <?php endif; ?>
+                                <?php echo htmlspecialchars($_SESSION['user_nama']); ?>
                                 <?php if(isset($_SESSION['user_role_name'])): ?>
                                 <span class="badge bg-secondary"><?php echo htmlspecialchars($_SESSION['user_role_name']); ?></span>
                                 <?php endif; ?>
@@ -223,7 +236,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="card shadow-sm">
                     <div class="card-body text-center">
                         <div class="mb-3">
-                            <img src="<?php echo strpos($user['foto'], 'uploads/') === 0 ? 'assets/images/' . htmlspecialchars($user['foto']) : 'assets/images/' . htmlspecialchars($user['foto']); ?>" alt="Profile Picture" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                            <?php if (!empty($user['foto']) && file_exists($user['foto'])): ?>
+                            <img src="<?php echo htmlspecialchars($user['foto']); ?>" alt="Profile Picture" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                            <?php else: ?>
+                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto" style="width: 150px; height: 150px;">
+                                <i class="fas fa-user fa-5x text-white"></i>
+                            </div>
+                            <?php endif; ?>
                         </div>
                         <h4><?php echo htmlspecialchars($user['nama']); ?></h4>
                         <p class="text-muted">@<?php echo htmlspecialchars($user['username']); ?></p>

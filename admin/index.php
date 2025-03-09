@@ -71,7 +71,10 @@ while ($row = $result->fetch_assoc()) {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active px-3" href="index.php"><i class="fas fa-home me-1"></i> Dashboard</a>
+                        <a class="nav-link px-3" href="../index.php"><i class="fas fa-home me-1"></i> Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active px-3" href="index.php"><i class="fas fa-tachometer-alt me-1"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link px-3" href="artikel.php"><i class="fas fa-newspaper me-1"></i> Artikel</a>
@@ -88,8 +91,23 @@ while ($row = $result->fetch_assoc()) {
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle px-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle me-1"></i> <?php echo htmlspecialchars($_SESSION['admin_nama']); ?>
+                        <a class="nav-link dropdown-toggle px-3 d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <?php 
+                            // Get admin data to display profile photo
+                            $admin_id = $_SESSION['admin_id'];
+                            $admin_query = $conn->prepare("SELECT foto FROM admin WHERE id = ?");
+                            $admin_query->bind_param("i", $admin_id);
+                            $admin_query->execute();
+                            $admin_result = $admin_query->get_result();
+                            $admin_data = $admin_result->fetch_assoc();
+                            
+                            if (!empty($admin_data['foto']) && file_exists('../' . $admin_data['foto'])) {
+                                echo '<img src="../' . htmlspecialchars($admin_data['foto']) . '" class="rounded-circle me-2" width="28" height="28" style="object-fit: cover;">';
+                            } else {
+                                echo '<i class="fas fa-user-circle me-1"></i>';
+                            }
+                            ?>
+                            <?php echo htmlspecialchars($_SESSION['admin_nama']); ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow">
                             <li><a class="dropdown-item" href="profil.php"><i class="fas fa-user me-2"></i> Profil</a></li>

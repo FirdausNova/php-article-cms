@@ -106,7 +106,10 @@ $status_messages = [
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="index.php"><i class="fas fa-home me-1"></i> Dashboard</a>
+                        <a class="nav-link px-3" href="../index.php"><i class="fas fa-home me-1"></i> Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="index.php"><i class="fas fa-tachometer-alt me-1"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link px-3" href="artikel.php"><i class="fas fa-newspaper me-1"></i> Artikel</a>

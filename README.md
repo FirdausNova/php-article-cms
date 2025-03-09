@@ -4,7 +4,7 @@
 
 ## 🌟 Tentang Aplikasi
 
-Portal Artikel adalah sistem manajemen konten berbasis web yang modern dan responsif untuk mengelola artikl, kategori, dan interaksi pengguna. Dibangun dengan PHP dan MySQL, dilengkapi dengan antarmuka Bootstrap 5 yang elegan dan mudah digunakan.
+Portal Artikel adalah sistem manajemen konten berbasis web yang modern dan responsif untuk mengelola artikel, kategori, dan interaksi pengguna. Dibangun dengan PHP dan MySQL, dilengkapi dengan antarmuka Bootstrap 5 yang elegan dan mudah digunakan.
 
 ## ✨ Fitur Utama
 
